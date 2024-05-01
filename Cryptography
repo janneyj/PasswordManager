@@ -20,7 +20,7 @@
 #include "Password.h"
 #include "Look Up Charts.h"
 
-int main(int argc, const char * argv[]) {
+int cryptography(str path) {
     
     FILE *plaintext;
     FILE *cyphertext;
