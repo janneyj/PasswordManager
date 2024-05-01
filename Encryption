@@ -1,1 +1,106 @@
-//start
+//
+//  main.c
+//  AES College
+//
+//  Created by Janney family on 4/20/23.
+//
+
+/*
+ This is an encryption project. It uses the AES encryption standard, using the 128 bit version. There are three main portions to this program, passcode, encryption and decryption. Both of these have multiple portions under them.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+#include "Decryption.h"
+#include "Encryption.h"
+#include "General Purpose.h"
+#include "Password.h"
+#include "Look Up Charts.h"
+
+int main(int argc, const char * argv[]) {
+    
+    FILE *plaintext;
+    FILE *cyphertext;
+    FILE *decrypted;
+    char temp[2] = {3,4};
+    do{
+        fflush(stdin);
+        //For ease, a 1 or 2 option will represent the options the user has
+        printf("To encrypt please type 1. To decrypt please type 2.\n");
+        temp[0]=getchar();
+        temp[1]=getchar();
+        
+        /*
+         If encryption is picked, the files must be opened in the appropriate methods.
+         */
+        if(temp[0]=='1'&&temp[1]=='\n'){
+            
+            /*
+             Open files and make sure access is assured
+             */
+            plaintext=fopen("/Users/janneyfamily/Documents/XCode Programs/2022-2023/AES College/Plaintext.new.txt", "r");
+            if(plaintext==NULL)
+            {
+                printf("Can't open Plaintext file\n");
+                printf( "%s\n", strerror( errno));
+                return 1;
+            }
+            
+            
+            cyphertext=fopen("/Users/janneyfamily/Documents/XCode Programs/2022-2023/AES College/Cyphertext.New.txt", "w");
+            
+            if(cyphertext==NULL)
+            {
+                printf("Can't open cyphertext file\n");
+                printf( "%s\n", strerror( errno));
+                return 1;
+            }
+            /*
+             If all files opened correctly, and the passwords was inputed, begin encryption
+             */
+            Encrypt(plaintext, cyphertext);
+            fclose(cyphertext);
+            fclose(plaintext);
+            temp[1]='\0';
+        }
+        /*
+         If decryption was opened, different file permissions must be given
+         */
+        else if(temp[0]=='2'&&temp[1]=='\n'){
+            cyphertext=fopen("/Users/janneyfamily/Documents/XCode Programs/2022-2023/AES College/Cyphertext.New.txt", "r");
+            if(cyphertext==NULL)
+            {
+                printf("Can't open cyphertext file\n");
+                printf( "%s\n", strerror( errno));
+                return 1;
+            }
+            decrypted=fopen("/Users/janneyfamily/Documents/XCode Programs/2022-2023/AES College/Decrypted.New.txt", "w");
+            
+            if(decrypted==NULL)
+            {
+                printf("Can't open decrypted file\n");
+                printf( "%s\n", strerror( errno));
+                return 1;
+            }
+            /*
+             If everything went correctly, the decryption process may begin
+             */
+            Decrypt(cyphertext, decrypted);
+            
+            
+            fclose(decrypted);
+            fclose(cyphertext);
+            temp[1]='\0';
+        }
+        /*
+         If an invalid option was picked, go until a valid option was picked
+         */
+        else
+            printf("Invalid command\n");
+        
+    }while(temp[1]!='\0');
+    return 0;
+}
