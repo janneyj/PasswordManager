@@ -1,0 +1,95 @@
+//
+//  Decryption.c
+//  AES College
+//
+//  Created by Joy Janney family on 4/24/23.
+
+#include "Look Up Charts.h"
+#include "Password.h"
+#include "General Purpose.h"
+#include "Password.h"
+/*
+ Parameters:
+    Cyphertext: Pointer to the file with the the encrypted data
+    Decrypted: Pointer to file the decrypted data will be written to
+ Returns:
+    void
+Description: This subroutine decrypts a file by calling the following subroutines:
+        CreatePasscode - creates a passcode
+        KeyExpansion - expands key
+        Addition - Uses exclusive oring to add to numbers together
+        Substitute - Uses substitute encryption
+        MixColumns - Uses a finite field to complete matrix mulitpliation
+
+The basic AES system is:
+    1)Key Addition
+    2)Shift Rows
+    3)Substitute
+    4)Repeat 10 times:
+        A. Key Addition
+        B. Inv Mix Columns
+        C. Inv Shift Rows
+        D. Inv Substitute
+    5)Key Addition
+*/
+void Decrypt(FILE *cyphertext, FILE *decrypted){
+    const int roundnum = 10;
+
+
+    int letter = 'a';
+    int End = 0;
+    int count;
+    int round;
+
+    for(row=0;row<4;row++){
+        for(column=0;column<4;column++){
+            Passcodes[0][row][column]=0;
+        }
+    }
+    CreatePasscode();
+    KeyExpansion();
+
+    End=0;
+    letter=fgetc(cyphertext);
+    do{
+
+            for(count = 0; count <16; count++){//This loops takes sixteen letters and brings them to words to begin the encryption
+                if(letter != EOF){//If the end of file is not reached then that letter can be put into words
+                    Words[count/16][count%16] = letter;
+                    letter = fgetc(cyphertext);
+                }
+                else{//Else the EOF should not be encrypted and a space put inbetween
+                    Words[count/16][count%16] = 32;
+                    End = 1;//When End does not equal 0 the overall loop will end
+                }
+                
+            }
+        if(End==0){
+            Addition(&Words[0][0], &Passcodes[11][0][0]);//Step 1
+            for(count=1;count<4;count++){
+                Shift(&Words[count-1][0], 4-count);
+            }//Step 2
+            Substitute(InvSubChart, Words);//Step 3
+            for(round=roundnum;round>0;round--){//Step 4
+                Addition(&Words[0][0], &Passcodes[round][0][0]);//Step 4A
+                MixColumns(&Words[0][0], &InvMult[0][0]);//Step 4B
+                for(count=1;count<4;count++){
+                    Shift(&Words[count-1][0], 4-count);
+                }//Step 4C
+                Substitute(InvSubChart, Words);//Step 4D
+                
+            }
+            Addition(&Words[0][0], &Passcodes[0][0][0]);//Step 5
+            for(row=0;row<4;row++){//Printing the decrypted file to cyphertext
+                for(column=0;column<4;column++){
+                    fprintf(decrypted, "%c", Words[row][column]);
+                }
+            }
+            
+        }
+    }while(letter!=EOF||End==0);
+
+
+    
+    printf("Done Decrypting\n");
+}
