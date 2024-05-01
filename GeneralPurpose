@@ -1,0 +1,207 @@
+//
+//  General Purpose.c
+//  AES College
+//
+//  Created by Janney family on 4/20/23.
+//
+/*
+ This file will include all subroutines that can be used everywhere
+ */
+
+#include <stdio.h>
+#include "Look Up Charts.h"
+/*
+ Input:
+     Original: the value array that will be copied
+     Copy: The array that will be copied to
+     Length: The length of the array
+ Return:
+     void
+ Description:  copy will copy one array over to another array. It will get a starting pointer and a length to copy over. As long as both arrays are long enough, two dimensional, and three dimensional arrays can be copied
+
+ */
+void copy(int *orginal, int *copy, int length){
+    for(;length>0;length--){
+        *copy=*orginal;
+        copy++;
+        orginal++;
+    }
+}
+
+/*
+ Parameter:
+     Chr: Pointer to the beginning of words
+     Pass: Pointer to the beginning of the appropriate passcode
+ Return:
+     void
+ Description: Addition exclusive ors the one matrix against another. This is necessary inorder to make sure that the values stay within the range of 0-256.
+
+ */
+void Addition(int *chr, int *pass){
+    int count;
+    for(count=0;count<16;count++){
+        *chr^=*pass;
+        chr++;
+        pass++;
+    }
+}
+/*
+ Parameter:
+     ptr_chart: This pointer should point to the beginning of a chart that the desired value is wanted from
+     Row: The desired row that the value is from
+     Column: The desired column that the value is from
+     Totalrow: The total number of rows in the chart
+ Return:
+     The subroutine will return the value from the desired spot on the chart
+ Description:The subroutine will move the pointer to the desired spot by only incrementing the pointer. The math will work to move the pointer to the correct location.
+ */
+int ChartLookNew(int *ptr_chart, int row, int column, int totalrow){
+    row=row*totalrow;
+    row=row+column;
+    ptr_chart=ptr_chart+row;
+    return *ptr_chart;
+}
+/*
+ Parameter:
+     Chart: This is the beginning of the chart that will be printed
+     Row: The total amount of rows
+     Columns: The total amount of columns
+ Return:
+     void
+ Description:  Print will print out a 2D array. This is useful for debugging in order to see the charts and determine where the error came in
+
+ */
+void Print (int *chart, int row, int column){//This prints one chart
+    printf("-----------------------------------------\n");
+    int columntemp=column;
+    int temp;
+    int Temp;
+    while(row>0){
+        while(columntemp>0){
+            temp = *chart/16;
+            Temp = *chart%16;
+            printf("%d(%d:%d),", *chart, temp, Temp);//Prints out hex, as that is the prefered method.
+            columntemp--;
+            chart++;
+            
+        }
+        columntemp=column;
+        printf("\n");
+       row--;
+    }
+    printf("-----------------------------------------\n");
+}
+/*
+ Parameter:
+     Words: the beginning of the row that needs to be shifted
+     Rotate: The amount that the row should be rotated
+ Return:
+     void
+ Description: Shift will shift one row by the number given. It can only shift a four digit long array.
+
+ */
+void Shift(int *words, int rotate){
+    if(rotate<0)
+        printf("ERROR\n");
+    int count=0;
+    int temp[4];
+    int *tptr = &temp[rotate];
+    for(count=1;count<=4;count++){
+        *tptr=*words;
+        count==4-rotate?tptr=&temp[0]:tptr++;
+        words++;
+    }
+    words=words-4;
+    tptr=&temp[0];
+    copy(tptr, words, 4);
+
+}
+
+/*
+ Parameter:
+     Chart: This is the chart used to substitute, either the substitute chart of the inv substitute chart. Note, this does not have to change the chart value, so it is not a pointer.
+     W_KE: This is the chart that needs to be substituted. It will be either Words or a passcode
+ Return:
+     void
+ Description:  Substitute does a substitution encryption on the matrix. It goes through and substitutes each number
+
+ */
+void Substitute(int Chart[16][16], int W_KE[4][4]) {//This does a substitute encryption and can do the inverse substitution decryption
+    
+    int sixteens;
+    int ones;
+    for(row=0;row<4;row++){
+        for(column=0;column<4;column++){
+            sixteens=W_KE[row][column]/16;//This converts the number to hex to use on a look up chart
+            ones=W_KE[row][column]%16;
+            W_KE[row][column]=ChartLookNew(&Chart[0][0], sixteens, ones, 16);//Looks up the number on the chart
+        }
+    }
+}
+/*
+ Parameter:
+     Cptr: This is the pointer to the value that will run along the row. For this program, it is either mult chart or invmult chart
+     Rptr: This is the pointer to the value that will run along the column. This is be either words or a passcode
+ Return:
+     This subroutine will output a single value that has been multiplied correctly.
+ Description: Multiply will do the mathematical calculation for one digit and return the new value. In order to get that digit's new number, the column of the number must be multiplied by the row of another matrix.
+ */
+int Multiply(int *cptr, int *rptr){
+    int num=0;
+    int count;
+    for(count=0;count<4;count++){
+        switch (*rptr) {//the multiplying is done using special mathmatical principles, and as such, inorder to speed up the process, look up charts are used
+            case 1:
+                num^=*cptr;
+                break;
+            case 2:
+                num^=ChartLookNew(&x2[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            case 3:
+                num^=ChartLookNew(&x3[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            case 9:
+                num^=ChartLookNew(&x9[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            case 11:
+                num^=ChartLookNew(&x11[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            case 13:
+                num^=ChartLookNew(&x13[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            case 14:
+                num^=ChartLookNew(&x14[0][0], *cptr/16, *cptr%16, 16);
+                break;
+            default:
+                break;
+        }
+        rptr++;
+        cptr+=4;
+    }
+    return num;
+}
+/*
+ Parameter:
+     Words: Pointer to the beginning of words
+     Mult: Pointer to the beginning of mult chart of inv mult chart
+ Return:
+     void
+ Description:  MixColumns will multiply the word matrix against the multiplicand matrix. It calls multiply and puts the numbers in a temp variable before copying it over.
+
+ */
+void MixColumns(int *words, int *mult){
+    int temp[4][4];
+    int count;
+    for(count=0;count<16;count++){
+        temp[count/4][count%4]=Multiply(words, mult);
+        if(count%4==3&&count>0){
+            mult+=4;
+            words-=3;
+        }
+        else
+            words++;
+        
+    }
+    copy(&temp[0][0], words, 16);
+    
+}
