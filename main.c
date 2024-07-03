@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 //This is the basic struct that all CRUD operations will use and the file will contain
 #define lpass 25
@@ -12,7 +13,7 @@ struct loginfo{
    char domain[ldomain];
    char username[lusername];
    char password[lpass];
-}
+};
 
 //This subroutine will create a file for use in the database
    //The file will contian a struct consisting of the domain name, the url, the username, the password
@@ -35,14 +36,65 @@ int create(FILE *fptr, char domain[]){
       printf("Unable to open file.\n\n\n\n");
       return -1;
    }
+
+   /*Need to figure out how to get url, username, and password. Also may need a function to autogenerate password*/
+   //Adding the information to the struct
+   struct loginfo current = {"www.IDon'tCare.com", domain, "admin", "1234"};
+   printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    return 0;
 }
+
+//This function should ask what needs to be updated and then requests what the new update should be
+int Update(FILE *fptr){
+   if(fptr==NULL)
+   {
+      printf("Unable to open file.\n\n\n\n");
+      return -1;
+   }
+   struct loginfo current;
+   bool correct = false;
+   char answer[20];
+   char update[lurl];
+   //if statement not working
+   while(correct == false){
+      printf("What field needs to be update? ");
+      scanf("%s", &answer);
+      printf("%s\n", answer);
+      if(answer=="domain"){
+         printf("What do you wish to update %s to: ", answer);
+         scanf("%s", &update);
+         correct = true;
+      }
+      else if (answer=="username"){
+         printf("What do you wish to update %s to: ", answer);
+         scanf("%s", &update);
+         correct = true;
+      }
+      else if (answer=="password"){
+         printf("What do you wish to update %s to: ", answer);
+         scanf("%s", &update);
+         correct = true;
+      }
+      else if (answer=="url"){
+         printf("What do you wish to update %s to: ", answer);
+         scanf("%s", &update);
+         correct = true;
+      }
+      }
+
+   return 0;
+   }
 
 int main() {
    
    FILE *fptr;
    if( create(fptr, "Yamazon") == -1)
       printf("Something horrible happened\n");
+   Update(fptr);
+   char *temp;
+   while(*temp!='\0'){
+      printf("%c", *temp);
+   }
 
    return 0;
 }
