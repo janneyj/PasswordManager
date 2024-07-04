@@ -41,47 +41,48 @@ int create(FILE *fptr, char domain[]){
    //Adding the information to the struct
    struct loginfo current = {"www.IDon'tCare.com", domain, "admin", "1234"};
    printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
+   fprintf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n\0", current.url, current.domain, current.username, current.password);
    return 0;
 }
 
 //This function should ask what needs to be updated and then requests what the new update should be
 int Update(FILE *fptr){
+   //file is not opening
    if(fptr==NULL)
    {
       printf("Unable to open file.\n\n\n\n");
       return -1;
    }
    struct loginfo current;
-   bool correct = false;
+   bool correct = true;
    char answer[20];
    char update[lurl];
    //if statement not working
-   while(correct == false){
+   while(correct){
       printf("What field needs to be update? ");
-      scanf("%s", &answer);
+      gets(answer);
       printf("%s\n", answer);
-      if(answer=="domain"){
+      if(strcmp(answer,"domain")==0){
          printf("What do you wish to update %s to: ", answer);
-         scanf("%s", &update);
-         correct = true;
+         gets(update);
+         correct = !correct;
       }
       else if (answer=="username"){
          printf("What do you wish to update %s to: ", answer);
-         scanf("%s", &update);
+         gets(update);
          correct = true;
       }
       else if (answer=="password"){
          printf("What do you wish to update %s to: ", answer);
-         scanf("%s", &update);
+         gets(update);
          correct = true;
       }
       else if (answer=="url"){
          printf("What do you wish to update %s to: ", answer);
-         scanf("%s", &update);
+         gets(update);
          correct = true;
       }
       }
-
    return 0;
    }
 
@@ -90,11 +91,18 @@ int main() {
    FILE *fptr;
    if( create(fptr, "Yamazon") == -1)
       printf("Something horrible happened\n");
-   Update(fptr);
-   char *temp;
-   while(*temp!='\0'){
-      printf("%c", *temp);
+   fptr = fopen("Yamazon.txt", "w");
+   if( Update(fptr) == -1)
+      printf("Something horrible happened\n");
+   fclose(fptr);
+   //Lop going to infinite
+  /* fptr = fopen("Yamazon.txt", "r");
+   while(fptr!="\0"){
+      printf("%c", fptr);
+      fptr++;
+
    }
+   fclose(fptr);*/
 
    return 0;
 }
