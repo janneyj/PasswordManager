@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include "stdio.h"
 #include <string.h>
 #include <stdbool.h>
 
@@ -39,9 +39,9 @@ int create(FILE *fptr, char domain[]){
 
    /*Need to figure out how to get url, username, and password. Also may need a function to autogenerate password*/
    //Adding the information to the struct
-   struct loginfo current = {"www.IDon'tCare.com", domain, "admin", "1234"};
+   struct loginfo current = {"_blank", "_blank", "_blank", "_blank"};
    printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
-   fprintf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n\0", current.url, current.domain, current.username, current.password);
+   fprintf(fptr, "url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    return 0;
 }
 
@@ -60,26 +60,28 @@ int Update(FILE *fptr){
    //if statement not working
    while(correct){
       printf("What field needs to be update? ");
-      gets(answer);
+      scanf("%s", answer);
       printf("%s\n", answer);
       if(strcmp(answer,"domain")==0){
          printf("What do you wish to update %s to: ", answer);
-         gets(update);
+         scanf("%s", update);
+         //current.domain = update;
+         printf("--%s--\n", current.domain);
          correct = !correct;
       }
-      else if (answer=="username"){
+      else if (strcmp(answer,"url")==0){
          printf("What do you wish to update %s to: ", answer);
-         gets(update);
+         scanf("%s", update);
          correct = true;
       }
-      else if (answer=="password"){
+      else if (strcmp(answer,"username")==0){
          printf("What do you wish to update %s to: ", answer);
-         gets(update);
+         scanf("%s", update);
          correct = true;
       }
-      else if (answer=="url"){
+      else if (strcmp(answer,"password")==0){
          printf("What do you wish to update %s to: ", answer);
-         gets(update);
+         scanf("%s", update);
          correct = true;
       }
       }
