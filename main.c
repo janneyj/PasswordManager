@@ -45,6 +45,17 @@ int create(FILE *fptr, char domain[]){
    return 0;
 }
 
+
+//This function is supposed to recieve a part of a struct that is a string and update the member
+bool MemberUpdate(FILE *ptr, char answer[1028], char *current){
+   char update[1028];
+   printf("What do you wish to update %s to: ", answer);
+   scanf("%s", update);
+   //current.domain = update;
+   printf("--%s--\n", current);
+   return false;
+}
+
 //This function should ask what needs to be updated and then requests what the new update should be
 int Update(FILE *fptr){
    //file is not opening
@@ -57,33 +68,42 @@ int Update(FILE *fptr){
    bool correct = true;
    char answer[20];
    char update[lurl];
-   //if statement not working
+   char *sptr;
+   //This loop will ask the user for the field that they want to be updated and then ask for the update
    while(correct){
       printf("What field needs to be update? ");
       scanf("%s", answer);
       printf("%s\n", answer);
       if(strcmp(answer,"domain")==0){
-         printf("What do you wish to update %s to: ", answer);
-         scanf("%s", update);
-         //current.domain = update;
-         printf("--%s--\n", current.domain);
-         correct = !correct;
+         sptr = &current.domain;
+         MemberUpdate(fptr, answer, sptr);
       }
       else if (strcmp(answer,"url")==0){
-         printf("What do you wish to update %s to: ", answer);
-         scanf("%s", update);
-         correct = true;
+         sptr = &current.url;
+         MemberUpdate(fptr, answer, sptr);
       }
       else if (strcmp(answer,"username")==0){
-         printf("What do you wish to update %s to: ", answer);
-         scanf("%s", update);
-         correct = true;
+         sptr = &current.username;
+         MemberUpdate(fptr, answer, sptr);
       }
       else if (strcmp(answer,"password")==0){
-         printf("What do you wish to update %s to: ", answer);
-         scanf("%s", update);
-         correct = true;
+         sptr = &current.password;
+         MemberUpdate(fptr, answer, sptr);
       }
+      printf("Do you want to update any other field? Please enter Y for yes or N for no.\n");
+      scanf("%s", answer);
+      printf("%s", answer);
+      //the program will ask the user if there are any other fields to be updated
+      fflush(stdin);
+      //Y is resulting to default else if
+      do{
+         printf("Do you want to update any other field? Please enter Yes for yes or No for no.\n");
+         scanf("%s", answer);
+         printf("%s", answer);
+         printf("%s", answer);
+      }while(answer!="No"&&answer!="Yes");//If statment not working
+      if(answer=="No")
+         correct=!correct;
       }
    return 0;
    }
@@ -91,7 +111,7 @@ int Update(FILE *fptr){
 int main() {
    
    FILE *fptr;
-   if( create(fptr, "Yamazon") == -1)
+   if( create(fptr, "Test") == -1)
       printf("Something horrible happened\n");
    fptr = fopen("Yamazon.txt", "w");
    if( Update(fptr) == -1)
