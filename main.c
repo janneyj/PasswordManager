@@ -40,7 +40,7 @@ int create(FILE *fptr, char domain[]){
    /*Need to figure out how to get url, username, and password. Also may need a function to autogenerate password*/
    //Adding the information to the struct
    struct loginfo current = {"_blank", "_blank", "_blank", "_blank"};
-   printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
+   printf("{url:\t\t%s}\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    fprintf(fptr, "url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    return 0;
 }
@@ -50,7 +50,7 @@ int create(FILE *fptr, char domain[]){
 bool MemberUpdate(FILE *ptr, char answer[1028], char *current){
    char update[1028];
    printf("What do you wish to update %s to: ", answer);
-   scanf("%s", update);
+   scanf("%s", update);//use str copy
    //current.domain = update;
    printf("--%s--\n", current);
    return false;
@@ -75,8 +75,8 @@ int Update(FILE *fptr){
       scanf("%s", answer);
       printf("%s\n", answer);
       if(strcmp(answer,"domain")==0){
-         sptr = &current.domain;
-         MemberUpdate(fptr, answer, sptr);
+         //sptr = &current.domain;
+         MemberUpdate(fptr, answer, &current.domain);
       }
       else if (strcmp(answer,"url")==0){
          sptr = &current.url;
@@ -89,24 +89,24 @@ int Update(FILE *fptr){
       else if (strcmp(answer,"password")==0){
          sptr = &current.password;
          MemberUpdate(fptr, answer, sptr);
+      
       }
-      printf("Do you want to update any other field? Please enter Y for yes or N for no.\n");
-      scanf("%s", answer);
-      printf("%s", answer);
-      //the program will ask the user if there are any other fields to be updated
-      fflush(stdin);
-      //Y is resulting to default else if
       do{
          printf("Do you want to update any other field? Please enter Yes for yes or No for no.\n");
          scanf("%s", answer);
-         printf("%s", answer);
-         printf("%s", answer);
-      }while(answer!="No"&&answer!="Yes");//If statment not working
+         printf("%s\n", answer);
+      }while(answer!="No"&&answer!="Yes");//Use string compare
       if(answer=="No")
          correct=!correct;
       }
    return 0;
    }
+
+int delete(char FileName){
+   if(remove("Hello.txt") != 0)
+      printf("Did not delete file.");
+   return 0;
+}
 
 int main() {
    
@@ -116,6 +116,7 @@ int main() {
    fptr = fopen("Yamazon.txt", "w");
    if( Update(fptr) == -1)
       printf("Something horrible happened\n");
+      delete("Hello.txt");
    fclose(fptr);
    //Lop going to infinite
   /* fptr = fopen("Yamazon.txt", "r");
