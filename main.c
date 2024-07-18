@@ -1,5 +1,6 @@
 
 #include "stdio.h"
+#include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -40,6 +41,11 @@ int create(FILE *fptr, char domain[]){
    /*Need to figure out how to get url, username, and password. Also may need a function to autogenerate password*/
    //Adding the information to the struct
    struct loginfo current = {"_blank", "_blank", "_blank", "_blank"};
+   printf("Please enter the username: ");
+   scanf("%s", current.username);
+   printf("\nPlease enter the password: ");
+   scanf("%s", current.password);
+   printf("\n");
    printf("{url:\t\t%s}\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    fprintf(fptr, "url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    return 0;
@@ -47,12 +53,10 @@ int create(FILE *fptr, char domain[]){
 
 
 //This function is supposed to recieve a part of a struct that is a string and update the member
-bool MemberUpdate(FILE *ptr, char answer[1028], char *current){
-   char update[1028];
-   printf("What do you wish to update %s to: ", answer);
-   scanf("%s", update);//use str copy
-   //current.domain = update;
-   printf("--%s--\n", current);
+bool MemberUpdate(FILE *ptr, char update[1028], char member[]){
+   printf("What do you wish to update %s to: ", update);
+   scanf("%s", member);//use str copy
+   printf("--%s--\n", member);
    return false;
 }
 
@@ -68,35 +72,33 @@ int Update(FILE *fptr){
    bool correct = true;
    char answer[20];
    char update[lurl];
-   char *sptr;
    //This loop will ask the user for the field that they want to be updated and then ask for the update
    while(correct){
       printf("What field needs to be update? ");
       scanf("%s", answer);
       printf("%s\n", answer);
       if(strcmp(answer,"domain")==0){
-         //sptr = &current.domain;
-         MemberUpdate(fptr, answer, &current.domain);
+         MemberUpdate(fptr, answer, current.domain);
       }
       else if (strcmp(answer,"url")==0){
-         sptr = &current.url;
-         MemberUpdate(fptr, answer, sptr);
+         MemberUpdate(fptr, answer, current.url);
       }
       else if (strcmp(answer,"username")==0){
-         sptr = &current.username;
-         MemberUpdate(fptr, answer, sptr);
+         MemberUpdate(fptr, answer, current.username);
       }
       else if (strcmp(answer,"password")==0){
-         sptr = &current.password;
-         MemberUpdate(fptr, answer, sptr);
+         MemberUpdate(fptr, answer, current.password);
       
       }
       do{
          printf("Do you want to update any other field? Please enter Yes for yes or No for no.\n");
          scanf("%s", answer);
-         printf("%s\n", answer);
-      }while(answer!="No"&&answer!="Yes");//Use string compare
-      if(answer=="No")
+      }while(strcmp(answer, "No")==1&&strcmp(answer, "Yes")==1);//Use string compare
+      for(int i=0; answer[i]!='\0'; i++){
+         answer[i]=tolower(answer[i]);
+         printf("%c", answer[i]);
+      }
+      if(strcmp(answer, "no")==0)
          correct=!correct;
       }
    return 0;
@@ -116,7 +118,7 @@ int main() {
    fptr = fopen("Yamazon.txt", "w");
    if( Update(fptr) == -1)
       printf("Something horrible happened\n");
-      delete("Hello.txt");
+   delete("Hello.txt");
    fclose(fptr);
    //Lop going to infinite
   /* fptr = fopen("Yamazon.txt", "r");
