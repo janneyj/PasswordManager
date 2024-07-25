@@ -1,3 +1,4 @@
+//retrieve is not reading from file properly
 
 #include "stdio.h"
 #include <ctype.h>
@@ -42,12 +43,12 @@ int create(FILE *fptr, char domain[]){
    //Adding the information to the struct
    struct loginfo current = {"_blank", "_blank", "_blank", "_blank"};
    printf("Please enter the username: ");
-   scanf("%s", current.username);
+   scanf("%25s", current.username);
    printf("\nPlease enter the password: ");
-   scanf("%s", current.password);
+   scanf("%25s", current.password);
    printf("\n");
-   printf("{url:\t\t%s}\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
-   fprintf(fptr, "url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
+   printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
+   fprintf(fptr, "url:\t\t{%s}\ndomain:\t\t{%s}\nusername:\t{%s}\npassword:\t{%s}\n", current.url, current.domain, current.username, current.password);
    return 0;
 }
 
@@ -55,7 +56,7 @@ int create(FILE *fptr, char domain[]){
 //This function is supposed to recieve a part of a struct that is a string and update the member
 bool MemberUpdate(FILE *ptr, char update[1028], char member[]){
    printf("What do you wish to update %s to: ", update);
-   scanf("%s", member);//use str copy
+   scanf("%10s", member);//use str copy
    printf("--%s--\n", member);
    return false;
 }
@@ -75,8 +76,7 @@ int Update(FILE *fptr){
    //This loop will ask the user for the field that they want to be updated and then ask for the update
    while(correct){
       printf("What field needs to be update? ");
-      scanf("%s", answer);
-      printf("%s\n", answer);
+      scanf("%10s", answer);
       if(strcmp(answer,"domain")==0){
          MemberUpdate(fptr, answer, current.domain);
       }
@@ -92,42 +92,77 @@ int Update(FILE *fptr){
       }
       do{
          printf("Do you want to update any other field? Please enter Yes for yes or No for no.\n");
-         scanf("%s", answer);
+         scanf("%2s", answer);
       }while(strcmp(answer, "No")==1&&strcmp(answer, "Yes")==1);//Use string compare
       for(int i=0; answer[i]!='\0'; i++){
          answer[i]=tolower(answer[i]);
-         printf("%c", answer[i]);
       }
       if(strcmp(answer, "no")==0)
          correct=!correct;
       }
    return 0;
    }
-
-int delete(char FileName){
-   if(remove("Hello.txt") != 0)
+//This subroutine will ask the user what file they want delete and will either delete the file or display an error message
+int delete(void){
+   char FileName[100];
+   printf("What file do you want to delete? ");
+   scanf("%150s", FileName);
+   if(remove(FileName) != 0)
       printf("Did not delete file.");
+   return 0;
+}
+
+int retrieve(char name[150], char password[lpass], char username[lusername], char url[lurl], char domain[ldomain]){
+   FILE *fptr;
+   char retrieve[2048];
+   //char FileName = concat(domain, ".txt");
+   fptr = fopen(name, "r");
+   if(fptr==NULL){
+      printf("Unable to open file\n");
+      return 0;
+   }
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\t", retrieve);
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\n", retrieve);
+      strcpy(url, retrieve);
+
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\t", retrieve);
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\n", retrieve);
+      strcpy(domain, retrieve);
+
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\t", retrieve);
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\n", retrieve);
+      strcpy(username, retrieve);
+
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\t", retrieve);
+      fscanf(fptr, "%2048s", retrieve);
+      printf("%s\n", retrieve);
+      strcpy(password, retrieve);
+
    return 0;
 }
 
 int main() {
    
    FILE *fptr;
+   fptr = fopen("Test", "w");
    if( create(fptr, "Test") == -1)
       printf("Something horrible happened\n");
-   fptr = fopen("Yamazon.txt", "w");
+     /*   
    if( Update(fptr) == -1)
-      printf("Something horrible happened\n");
-   delete("Hello.txt");
-   fclose(fptr);
-   //Lop going to infinite
-  /* fptr = fopen("Yamazon.txt", "r");
-   while(fptr!="\0"){
-      printf("%c", fptr);
-      fptr++;
+      //printf("Something horrible happened\n");
+   delete();*/
+   struct loginfo current;
+   retrieve("Test", &current.password, &current.username, &current.url, &current.domain);
+   printf("username: %s\npassword: %s\nurl: %s\ndomain: %s\n", current.username, current.password, current.url, current.domain);
 
-   }
-   fclose(fptr);*/
+   fclose(fptr);
 
    return 0;
 }
