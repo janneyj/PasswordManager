@@ -49,6 +49,7 @@ int create(FILE *fptr, char domain[]){
    printf("\n");
    printf("url:\t\t%s\ndomain:\t\t%s\nusername:\t%s\npassword:\t%s\n", current.url, current.domain, current.username, current.password);
    fprintf(fptr, "url:\t\t{%s}\ndomain:\t\t{%s}\nusername:\t{%s}\npassword:\t{%s}\n", current.url, current.domain, current.username, current.password);
+   fclose(fptr);
    return 0;
 }
 
@@ -112,7 +113,7 @@ int delete(void){
    return 0;
 }
 
-int retrieve(char name[150], char password[lpass], char username[lusername], char url[lurl], char domain[ldomain]){
+int retrieve(char name[150], char *password[lpass], char *username[lusername], char *url[lurl], char *domain[ldomain]){
    FILE *fptr;
    char retrieve[2048];
    //char FileName = concat(domain, ".txt");
@@ -121,6 +122,7 @@ int retrieve(char name[150], char password[lpass], char username[lusername], cha
       printf("Unable to open file\n");
       return 0;
    }
+   printf("in retrieve\n\n");
       fscanf(fptr, "%2048s", retrieve);
       printf("%s\t", retrieve);
       fscanf(fptr, "%2048s", retrieve);
