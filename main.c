@@ -38,13 +38,23 @@ Description:
       creates a file consisting of one struct where the file name is the domain name
 */
 int create(char domain[]){
-
-   FILE *fptr = fopen (domain, "w");
+   char user_input[2048];
+   printf("Input the url\n");
+   scanf("%1048s", user_input);
+   int end = 0;
+   char name[2048];
+   for(int i =4; user_input[i]!='\0'&&user_input[i]!='.'; i++){
+      name[i-4] = user_input[i];
+      end = i-3;
+   }
+   name[end]='\0';
+   printf("%s\n", name);
+   FILE *fptr = fopen (name, "w");
 
    //check to see if the file has been correctly opened, if not abort
    if(fptr==NULL)
    {
-      printf("Unable to open file.\n\n\n\n");
+      printf("Create: Unable to open file.\n\n\n\n");
       return -1;
    }
 
@@ -68,7 +78,7 @@ int Update(char domain[]){
    FILE *fptr = fopen(domain, "w");
    if(fptr==NULL)
    {
-      printf("Unable to open file.\n\n\n\n");
+      printf("Update: Unable to open file.\n\n\n\n");
       return -1;
    }
    struct loginfo current;
@@ -98,25 +108,46 @@ int Update(char domain[]){
    fclose(fptr);
    return 0;
    }
-//This subroutine will ask the user what file they want delete and will either delete the file or display an error message
+/*
+Name: delete
+Parameters: void
+Return: 
+   0 - int: if there were no errors
+   -1 - int: if there was an error
+Description: This will ask the user for the file to be deleted, deletes the file, and confirms if it was deleted
+*/   
 int delete(void){
    char FileName[100];
    printf("What file do you want to delete? ");
    scanf("%150s", FileName);
-   if(remove(FileName) != 0)
+   if(remove(FileName) != 0){
       printf("Did not delete file.");
+      return -1;
+   }
    return 0;
 }
 
+/*
+Name: retrieve
+Parameters:
+      name - char[150]: the name of the file that should be opened
+      info - struct loginfo*: a pointer to the struct that the values should be saved to
+Return:
+      0 - int: if it is normal
+      -1 - int: if there is a problem
+Description: This will read from the file the parts of the loginfo struct and save it to a struct
+*/
 int retrieve(char name[150], struct loginfo* info){
+   //opening the file and checking to make sure that the file opened correctly
    FILE *fptr;
    char retrieve[2048];
    fptr = fopen(name, "r");
    if(fptr==NULL){
-      printf("Unable to open file\n");
+      printf("Retrieve: Unable to open file\n");
       return -1;
    }
-
+   //the first part read is the name of the struct that it is a part of so it should be skipped
+   //the second part is the actual part that needs to be saved
    fscanf(fptr, "%2048s", retrieve);
    fscanf(fptr, "%2048s", info->url);
 
@@ -135,20 +166,17 @@ int retrieve(char name[150], struct loginfo* info){
 }
 
 int main() {
-   
-   /*FILE *fptr;
-   fptr = fopen("Test", "w");*/
    char option = true;
    char user_input[2];
    do {
       printf("Please input C for create, U for Update and D for delete.\n");
       scanf("%1s", user_input);
       if (strcmp(user_input, "C") == 0){
-         if( create("Test") == -1)
+         if( create("joy") == -1)
             printf("Something horrible happened\n");
       }
       else if (strcmp(user_input, "U")==0){
-         if( Update("Test") == -1)
+         if( Update("joy") == -1)
             printf("Something horrible happened\n");
       }
       else
@@ -157,7 +185,7 @@ int main() {
    while (option == true);
    
    struct loginfo current;
-   retrieve("Test", &current);
+   retrieve("joy", &current);
    printf("username: %s\npassword: %s\nurl: %s\ndomain: %s\n", current.username, current.password, current.url, current.domain);
 
    return 0;
