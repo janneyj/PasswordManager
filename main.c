@@ -27,6 +27,18 @@ bool MemberUpdate(FILE *ptr, char updateName[1028], char member[]){
    return false;
 }
 
+int get_name(char *name){
+   char user_input[1048];
+   printf("Input the url\n");
+   scanf("%1048s", user_input);
+   for(int i =4; user_input[i]!='\0'&&user_input[i]!='.'; i++){
+      *name = user_input[i];
+      name++;
+   }
+   *name ='\0';
+   return 0;
+}
+
 /*
 Name: create
 Parameters: 
@@ -37,19 +49,11 @@ Return:
 Description:
       creates a file consisting of one struct where the file name is the domain name
 */
-int create(char domain[]){
-   char user_input[2048];
-   printf("Input the url\n");
-   scanf("%1048s", user_input);
-   int end = 0;
-   char name[2048];
-   for(int i =4; user_input[i]!='\0'&&user_input[i]!='.'; i++){
-      name[i-4] = user_input[i];
-      end = i-3;
-   }
-   name[end]='\0';
-   printf("%s\n", name);
-   FILE *fptr = fopen (name, "w");
+int create(){
+   char domain[2048];
+   get_name(&domain[0]);
+
+   FILE *fptr = fopen (domain, "w");
 
    //check to see if the file has been correctly opened, if not abort
    if(fptr==NULL)
@@ -73,9 +77,11 @@ int create(char domain[]){
 
 
 //This function should ask what needs to be updated and then requests what the new update should be
-int Update(char domain[]){
+int Update(){
    //file is not opening
-   FILE *fptr = fopen(domain, "w");
+   char FileName[2048];
+   get_name(&FileName[0]);
+   FILE *fptr = fopen(FileName, "w");
    if(fptr==NULL)
    {
       printf("Update: Unable to open file.\n\n\n\n");
@@ -117,9 +123,8 @@ Return:
 Description: This will ask the user for the file to be deleted, deletes the file, and confirms if it was deleted
 */   
 int delete(void){
-   char FileName[100];
-   printf("What file do you want to delete? ");
-   scanf("%150s", FileName);
+   char FileName[2048];
+   get_name(&FileName[0]);
    if(remove(FileName) != 0){
       printf("Did not delete file.");
       return -1;
@@ -139,9 +144,11 @@ Description: This will read from the file the parts of the loginfo struct and sa
 */
 int retrieve(char name[150], struct loginfo* info){
    //opening the file and checking to make sure that the file opened correctly
+   char FileName[2048];
+   get_name(&FileName[0]);
    FILE *fptr;
    char retrieve[2048];
-   fptr = fopen(name, "r");
+   fptr = fopen(FileName, "r");
    if(fptr==NULL){
       printf("Retrieve: Unable to open file\n");
       return -1;
