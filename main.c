@@ -36,6 +36,7 @@ int get_name(char *name){
       name++;
    }
    *name ='\0';
+   fflush(stdin);
    return 0;
 }
 
@@ -71,12 +72,14 @@ int create(){
    MemberUpdate(fptr, "url", current.url);
    fprintf(fptr, "url:\t\t{%s}\ndomain:\t\t{%s}\nusername:\t{%s}\npassword:\t{%s}\n", current.url, current.domain, current.username, current.password);
    fclose(fptr);
+   fflush(stdin);
    return 0;
 }
 
 
 
 //This function should ask what needs to be updated and then requests what the new update should be
+//FIXME retrieve and save it. Currently not retrieving or saving just updating a struct
 int Update(){
    //file is not opening
    char FileName[2048];
@@ -111,7 +114,9 @@ int Update(){
       answer[i]=tolower(answer[i]);
    }
    fflush(fptr);//file not being saved correctly
+
    fclose(fptr);
+   fflush(stdin);
    return 0;
    }
 /*
@@ -129,6 +134,7 @@ int delete(void){
       printf("Did not delete file.");
       return -1;
    }
+   fflush(stdin);
    return 0;
 }
 
@@ -168,7 +174,7 @@ int retrieve(char name[150], struct loginfo* info){
    fscanf(fptr, "%2048s", info->password);
 
    fclose(fptr);
-
+   fflush(stdin);
    return 0;
 }
 
@@ -179,18 +185,22 @@ int main() {
       printf("Please input C for create, U for Update and D for delete.\n");
       scanf("%1s", user_input);
       if (strcmp(user_input, "C") == 0){
-         if( create("joy") == -1)
+         if( create() == -1)
             printf("Something horrible happened\n");
       }
       else if (strcmp(user_input, "U")==0){
-         if( Update("joy") == -1)
+         if( Update() == -1)
+            printf("Something horrible happened\n");
+      }
+      else if (strcmp(user_input, "D")==0){
+         if( delete() == -1)
             printf("Something horrible happened\n");
       }
       else
          option = false;
    }
    while (option == true);
-   
+   printf("Retrieving file\n");
    struct loginfo current;
    retrieve("joy", &current);
    printf("username: %s\npassword: %s\nurl: %s\ndomain: %s\n", current.username, current.password, current.url, current.domain);
