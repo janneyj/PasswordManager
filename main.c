@@ -179,11 +179,15 @@ int main() {
       printf("Please input C for create, U for Update and D for delete.\n");
       scanf("%1s", user_input);
       if (strcmp(user_input, "C") == 0){
-         if( create("joy") == -1)
+         if( create() == -1)
             printf("Something horrible happened\n");
       }
       else if (strcmp(user_input, "U")==0){
-         if( Update("joy") == -1)
+         if( Update() == -1)
+            printf("Something horrible happened\n");
+      }
+      else if (strcmp(user_input, "U")==0){
+         if( delete() == -1)
             printf("Something horrible happened\n");
       }
       else
