@@ -190,6 +190,12 @@ int main() {
       }
       else if (strcmp(user_input, "U")==0){
          if( Update() == -1)
+         if( create() == -1)
+            printf("Something horrible happened\n");
+      }
+      else if (strcmp(user_input, "U")==0){
+         if( delete() == -1)
+         if( Update() == -1)
             printf("Something horrible happened\n");
       }
       else if (strcmp(user_input, "D")==0){
