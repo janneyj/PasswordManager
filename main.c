@@ -29,13 +29,39 @@ bool MemberUpdate(FILE *ptr, char updateName[1028], char member[]){
 
 int get_name(char *name){
    char user_input[1048];
+
    printf("Input the url\n");
    scanf("%1048s", user_input);
-   for(int i =4; user_input[i]!='\0'&&user_input[i]!='.'; i++){
-      *name = user_input[i];
-      name++;
+   int start = 0;
+   int end = 0;
+
+   char start_phrase[5] = "www.\0";
+   char end_phrase[5] = ".com\0";
+   char check[5];
+   check[4] = '\0';
+   char domain[1048];
+   int result = 5;
+   
+   for(int i =3; user_input[i]; i++){
+      for(int n = 0; n < 4; n++){
+         check[n] = user_input[i-(3-n)];
+      }
+      result = strcmp(check,start_phrase);
+      if (result==0){//FIXME the strcmp is not working for some reason
+      //Both of the stringa can be equal but it is not recongized as such
+         start = i+1;}
+      result = strcmp(check, end_phrase);
+      if(result==0){
+         end = i-3;}
    }
-   *name ='\0';
+   int n = 0;
+   for(int i = start; i < end; i++){
+
+      domain[n] = user_input[i];
+      n++;
+   }
+   printf("**%s**\n", domain);
+
    fflush(stdin);
    return 0;
 }
@@ -201,6 +227,10 @@ int main() {
       else if (strcmp(user_input, "D")==0){
          if( delete() == -1)
             printf("Something horrible happened\n");
+      }
+      else if (strcmp(user_input, "K")==0){
+         char domain[1048];
+         get_name(&domain[0]);
       }
       else
          option = false;
