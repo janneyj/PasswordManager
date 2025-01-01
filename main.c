@@ -36,7 +36,7 @@ int get_name(char *name){
    int end = 0;
 
    char start_phrase[5] = "www.\0";
-   char end_phrase[5] = ".com\0";
+   char end_phrase[5][5] = {".com\0", ".gov\0", ".org\0", ".edu\0", ".mil\0"};
    char check[5];
    check[4] = '\0';
    char domain[1048];
@@ -47,12 +47,12 @@ int get_name(char *name){
          check[n] = user_input[i-(3-n)];
       }
       result = strcmp(check,start_phrase);
-      if (result==0){//FIXME the strcmp is not working for some reason
-      //Both of the stringa can be equal but it is not recongized as such
+      if (result==0){
          start = i+1;}
-      result = strcmp(check, end_phrase);
-      if(result==0){
-         end = i-3;}
+      
+      if (((check[3] == 47) && (check[4] == 0)) || ((check[2] == 47) && (check[3] != 47))){
+         end = i-4;
+      }
    }
    int n = 0;
    for(int i = start; i < end; i++){
