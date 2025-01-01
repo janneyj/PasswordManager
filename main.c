@@ -39,7 +39,6 @@ int get_name(char *name){
    char end_phrase[5][5] = {".com\0", ".gov\0", ".org\0", ".edu\0", ".mil\0"};
    char check[5];
    check[4] = '\0';
-   char domain[1048];
    int result = 5;
    
    for(int i =3; user_input[i]; i++){
@@ -54,13 +53,15 @@ int get_name(char *name){
          end = i-4;
       }
    }
-   int n = 0;
+   if (end == 0){
+      printf("URL was faulty\n");
+      return -1;
+   }
    for(int i = start; i < end; i++){
 
-      domain[n] = user_input[i];
-      n++;
+      *name = user_input[i];
+      name++;
    }
-   printf("**%s**\n", domain);
 
    fflush(stdin);
    return 0;
@@ -78,6 +79,9 @@ Description:
 */
 int create(){
    char domain[2048];
+   for (int i =0; i < 2048; i++){
+      domain[i] = 0;
+   }
    get_name(&domain[0]);
 
    FILE *fptr = fopen (domain, "w");
@@ -207,8 +211,10 @@ int retrieve(char name[150], struct loginfo* info){
 int main() {
    char option = true;
    char user_input[2];
+   
+   struct loginfo current;   
    do {
-      printf("Please input C for create, U for Update and D for delete.\n");
+      printf("Please input C for create, R for retrieve, U for Update and D for delete.\n");
       scanf("%1s", user_input);
       if (strcmp(user_input, "C") == 0){
          if( create() == -1)
@@ -216,12 +222,10 @@ int main() {
       }
       else if (strcmp(user_input, "U")==0){
          if( Update() == -1)
-         if( create() == -1)
             printf("Something horrible happened\n");
       }
-      else if (strcmp(user_input, "U")==0){
-         if( delete() == -1)
-         if( Update() == -1)
+      else if (strcmp(user_input, "R")==0){
+         if( retrieve("joy", &current) == -1)
             printf("Something horrible happened\n");
       }
       else if (strcmp(user_input, "D")==0){
@@ -234,10 +238,9 @@ int main() {
       }
       else
          option = false;
-   }
-   while (option == true);
+   }while (option == true);
+
    printf("Retrieving file\n");
-   struct loginfo current;
    retrieve("joy", &current);
    printf("username: %s\npassword: %s\nurl: %s\ndomain: %s\n", current.username, current.password, current.url, current.domain);
 
