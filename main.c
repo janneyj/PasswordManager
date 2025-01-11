@@ -207,7 +207,7 @@ int retrieve(char name[150], struct loginfo* info){
    fflush(stdin);
    return 0;
 }
-
+//This funciton allows the user to access a step by step guide to using the program
 void help(){
    printf("Press\n1 - For help with saving a password\n2 - For help with viewing a password, username, or URL\n");
    printf("3 - For help with updating a password, username, or URL\n");
