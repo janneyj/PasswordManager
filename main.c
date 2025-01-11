@@ -208,13 +208,61 @@ int retrieve(char name[150], struct loginfo* info){
    return 0;
 }
 
+void help(){
+   printf("Press\n1 - For help with saving a password\n2 - For help with viewing a password, username, or URL\n");
+   printf("3 - For help with updating a password, username, or URL\n");
+   printf("4 - For deleting a password\n");
+   char choice[2];
+   scanf("%2s", choice);
+   if(strcmp(choice, "1")==0){
+      printf("Steps to creating a password\n");
+      printf("1. Input C when prompted by the terminal\n");
+      printf("2. Copy the URL for the website you want to save the password for\n");
+      printf("3. Paste the URL into the terminal when prompted\n");
+      printf("4. Input the username that is associated with the username\n");
+      printf("5. Input the password you want to save for future use\n");
+      printf("6. Re-input the url (Please be patient while we work on this issue. Thank you!)\n");
+   }
+   else if (strcmp(choice, "2")==0){
+      printf("Steps to viewing a password, username, or URL\n");
+      printf("1. Input R when prompted by the terminal\n");
+      printf("2. Copy the URL for the website you want to save the password for\n");
+   }
+   else if (strcmp(choice, "3")==0){
+      printf("Steps to updating a password, username, or URL\n");
+      printf("1. Input U when prompted by the terminal\n");
+      printf("2. Copy the URL for the website you want to save the password for\n");
+      printf("3. Paste the URL into the terminal when prompted\n");
+      printf("4. Type the desired field you want to update (username, password, or URL)\n");
+      printf("5. Input the updated field\n");
+   }
+      else if (strcmp(choice, "4")==0){
+      printf("Steps to deleting a password\n");
+      printf("1. Input D when prompted by the terminal\n");
+      printf("2. Copy the URL for the website you want to save the password for\n");
+      printf("3. Paste the URL into the terminal when prompted\n");
+   }
+   else{
+      printf("Wow you really are confused. Please only input a 1, 2, 3, 4 with no spaces, commas, or anything else.\n");
+      printf("No literally just type the number and press enter.");
+   }
+}
+
 int main() {
    char option = true;
    char user_input[2];
+
+   printf("Welcome's to I Can't Remember My Password\n");
+   printf("  ***********\n");
+   printf(" **  +   +  **\n");
+   printf("**           **\n");
+   printf(" **   ---   **\n");
+   printf("  ***********\n");
    
    struct loginfo current;   
    do {
-      printf("Please input C for create, R for retrieve, U for Update and D for delete.\n");
+      printf("Please input C for create, R for retrieve, U for Update, D for delete, and H for Help.\n");
+      printf("To end the program press any other key\n");
       scanf("%1s", user_input);
       if (strcmp(user_input, "C") == 0){
          if( create() == -1)
@@ -232,9 +280,9 @@ int main() {
          if( delete() == -1)
             printf("Something horrible happened\n");
       }
-      else if (strcmp(user_input, "K")==0){
+      else if (strcmp(user_input, "H")==0){
          char domain[1048];
-         get_name(&domain[0]);
+         help();
       }
       else
          option = false;
