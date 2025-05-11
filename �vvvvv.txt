@@ -1,0 +1,4 @@
+url:		{www.a.com}
+domain:		{_blank}
+username:	{Jy}
+password:	{hi}

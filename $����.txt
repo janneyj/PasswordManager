@@ -1,0 +1,4 @@
+url:		{www.Joy.com}
+domain:		{$»ÿÿÿ.txt}
+username:	{Joy}
+password:	{Joy}
