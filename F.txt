@@ -1,4 +1,0 @@
-url:		{www.Amazon.com}
-domain:		{F}
-username:	{Amazon}
-password:	{Amazon}

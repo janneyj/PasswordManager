@@ -1,4 +1,0 @@
-url:		{www.admin.com}
-domain:		{admin}
-username:	{hardcoded}
-password:	{admin}
