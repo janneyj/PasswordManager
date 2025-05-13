@@ -1,0 +1,4 @@
+url:		{www.Amazon.com}
+domain:		{Amazon}
+username:	{Joy}
+password:	{Joy}

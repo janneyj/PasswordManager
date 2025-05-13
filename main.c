@@ -92,8 +92,8 @@ int create(){
    MemberUpdate("url", current.url);
    get_name(&current.url[0], &current.domain[0]);
 
-   char temp[2048];
-   strcpy(temp, current.domain);
+   char temp[2048] = "Files/\0";
+   strcat(temp, current.domain);
    
    FILE *fptr = fopen (strcat(temp, ".txt"), "w");
 
@@ -143,8 +143,10 @@ int retrieve(char FileName[], struct loginfo* info){
    //opening the file and checking to make sure that the file opened correctly
    FILE *fptr;
    char retrieve[2048];
-   strcat(FileName, ".txt");
-   fptr = fopen(FileName, "r");
+   char temp[lurl] = "Files/\0";
+   strcat(temp, FileName);
+   strcat(temp, ".txt");
+   fptr = fopen(temp, "r");
    if(fptr==NULL){
       printf("Retrieve: Unable to open file\n");
       return -1;
